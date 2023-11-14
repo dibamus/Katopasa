@@ -33,6 +33,7 @@ df <- df %>% elevBands(bbs = cutoffs)
 accumulationPlots <- accCurve(
   filter(df, group %in% c("frog","lizard","snake"), JAM_Number !=15267),
   info$colors[[1]]%>%unlist)
+
 elevationPlot <- plotElev(
   filter(df, group %in% c("frog","lizard","snake"), JAM_Number !=15267),
   info$colors[[1]]%>%unlist)
@@ -54,7 +55,7 @@ ggsave(filename = paste0(mtn, "_AccumulationPlot.png"),
 
 ggsave(filename = paste0(mtn, "_ElevationPlot.png"),
        plot = elevationPlot$rangeThrough,
-       width = 8, height = 6.2, units = "in",
+       width = 8, height = 6.5, units = "in",
        bg = "white")
 
 drive_put(paste0(mtn, "_ElevationPlot.png"), path = as_id(info$folder)) #not working

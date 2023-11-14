@@ -108,9 +108,9 @@ addGroups<- function(df){
   id <- df$'binom' # extract IDs
   #Lists of frog, snake, lizard, & turtle genera
   grp <- list(
-  frog = c("Tadpole","Tadpoles","Chalcorana","Duttaphrynus","Hylarana","Ingerophrynus","Kaloula","Limnonectes","Occidozyga","Oreophryne","Papurana","Polypedates","Rhacophorus","Tadpole","tadpole"),
-  snake = c("Shed","Ahaetulla","Amphiesma","Boiga","Calamaria","Coelognathus","Calamorhabdium","Chrysopelea","Cylindrophis","Dendrelaphis","Elaphe","Enhydris","Hebius","Hypsiscopus","Oligodon","Ophiophagus","Psammodynastes","Rabdion","Rhabdophis","snake","Tropidolaemus","Typhlops","Xenochrophis","Xenopeltis"),
-  lizard = c("Bronchocela","Cyrtodactylus","Dibamus","Draco","Emoia","Eutropis","Gehyra","Gekko","Hemidactylus","Hemiphyllodactylus","Lamprolepis","Lipinia","Sphenomorphus","Tytthoscincus","Varanus"),
+  frog = c("Tadpole","Tadpoles","Chalcorana","Duttaphrynus","Hylarana","Ingerophrynus","Kaloula","Limnonectes","Occidozyga","Oreophryne","Papuarana","Polypedates","Rhacophorus","Tadpole","tadpole"),
+  snake = c("Shed","Ahaetulla","Amphiesma","Boiga","Calamaria","Coelognathus","Calamorhabdium","Chrysopelea","Cylindrophis","Dendrelaphis","Elaphe","Enhydris","Hebius","Hypsiscopus","Indotyphlops","Gonyosoma","Oligodon","Ophiophagus","Psammodynastes","Rabdion","Rhabdophis","snake","Tropidolaemus","Typhlops","Xenochrophis","Xenopeltis"),
+  lizard = c("Bronchocoela","Cyrtodactylus","Dibamus","Draco","Emoia","Eutropis","Gehyra","Gekko","Hemidactylus","Hemiphyllodactylus","Lamprolepis","Lipinia","Sphenomorphus","Tiliqua","Tytthoscincus","Varanus"),
   turtle = c("Cuora","Leucocephalon")
   )
   
@@ -181,13 +181,14 @@ elevBands <- function(df,bbs,cf=0){ #df and a vector of cutoff elevations betwee
   if(length(which(is.na(df$Elevation) & !is.na(df$Longitude))) !=0){
   
   elevest <- df[which(is.na(df$Elevation) & !is.na(df$Longitude)),c("Longitude","Latitude")] %>%
-    as.data.frame %>%
-    get_elev_point(prj = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
+    as.data.frame 
+  colnames(elevest) <- c("x","y")
+  elevest <- get_elev_point(elevest, prj = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
                    src = 'aws', 
-                   z = 14) #14 (9.6m resolution) is the highest-resolution dataset available for Sulwesi
+                   z = 14) #14 (9.6m resolution) is the highest-resolution dataset available for Sulawesi
    
   
-  df[which(is.na(df$Elevation) & !is.na(df$Longitude)),"Elevation"] <- elevest@data$elevation +
+  df[which(is.na(df$Elevation) & !is.na(df$Longitude)),"Elevation"] <- elevest$elevation +
     cf #add any correction factor to the elevations
   }
   #assign bands to specimens
