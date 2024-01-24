@@ -1,6 +1,7 @@
 #### WHAT'S IN A MOUNTAIN? ####
 # This code helps you find out!
 
+#Put your REAL working directory on the line below.
 setwd("C:/Users/Isaac/Syncthing-Docs/Lab Meeting/Checklist/Katopasa")
 source("checklistFunctions2.R")
 
