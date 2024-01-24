@@ -340,10 +340,10 @@ plotElev <- function(df, colors){
   
   #scatterplot of all specimen elevations, organized by species  
   scatter <- ggplot() +
-    geom_hline(yintercept = bbs, color = colors[length(colors)], linetype = "dashed") +
+    geom_hline(yintercept = bbs, color = "#586A6A", linetype = "dashed") +
     
     geom_point(data = edf, aes(x = binom, y=Elevation, group = group, color = group, fill = group), size = 0.5)+
-    geom_linerange(data = min.max, aes(x = binom, ymin = min.el, ymax =  max.el), colour = colors[length(colors)], linetype = "dotted") +
+    geom_linerange(data = min.max, aes(x = binom, ymin = min.el, ymax =  max.el), colour = "#586A6A", linetype = "dotted") +
     geom_point(data = edf, aes(x = binom, y=Elevation, group = group, color = group, fill = group, pch = group), size = 2.5)+
     
   
@@ -362,7 +362,7 @@ plotElev <- function(df, colors){
   #line graph of range-through diversity
   rtDiv <- ggplot(dd, aes(x = eBin, y = divRT, group = group, color = group, linetype = group)) +
     geom_line(size = 1.5)+ 
-    geom_vline(xintercept = bbs, color = colors[length(colors)], linetype = "dashed") +
+    geom_vline(xintercept = bbs, color = "#586A6A", linetype = "dashed") +
     scale_color_manual(values = colors) +
     scale_linetype_manual(values = c("longdash", "dashed", "dotted","solid")) +
     theme_minimal()+
