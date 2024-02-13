@@ -72,6 +72,8 @@ write_sheet(t1$publicationTable, ss = as_id(info$t1), sheet = 1)
 t2 <- missingSpecies(filter(df,group %in% c("lizard","frog","snake"))) 
 write_sheet(t2$PublicationTable, ss = as_id(info$t2), sheet = 1)
 
+
+
 #### STEP 5 - Calculate beta diversity for elevational bands
 
 beta <- betadiver(veganize(df, elevation = TRUE))
