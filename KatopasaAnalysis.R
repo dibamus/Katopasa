@@ -7,6 +7,7 @@ source("checklistFunctions2.R")
 
 # Load in these libraries
 library("tidyverse")
+library("tibble")
 library("vegan")
 library("reshape2")
 library("googlesheets4")
