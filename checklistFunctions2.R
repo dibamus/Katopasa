@@ -432,6 +432,9 @@ speciesTable <- function(df) {
                          "Mass" = getrange(speciestable$minMASS,speciestable$maxMASS),
                          "Elevation" = getrange(speciestable$minel,speciestable$maxel)) %>%
     arrange(group,Species)
+  pubTable$SVL <- str_replace(pubTable$SVL, "-",'–')
+  pubTable$Mass <- str_replace(pubTable$Mass, "-",'–')
+  pubTable$Elevation <- str_replace(pubTable$Elevation, "-",'–')
   
   return(list("speciesTable" = speciesTable,
               "publicationTable" = pubTable))
