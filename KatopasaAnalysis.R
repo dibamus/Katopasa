@@ -16,7 +16,8 @@ library("googledrive")
 library("cowplot")
 library("elevatr")
 library("divDyn")
-
+library("terra")
+library("sf")
 
 ##SETUP - simply supply
 # 2 - the NAME of your mountain
@@ -27,9 +28,65 @@ info <- readRDS("folderIDs.rds") %>% filter(Mountain == mtn)
 df <- read_sheet(info$datasheet) %>% dfSetup() %>% addGroups()
 
 #### STEP 2 - Add groups/Look up Elevation####
+
+#### OPTIONAL: Check elevatr accuracy ####
+# Check elevational accuracy according to aws data from elevatr
+
+#
+
+elevs <- filter(df, !is.na(Latitude), !is.na(Uncertainty))[,c("Longitude","Latitude","Uncertainty","Elevation")]
+
+elevs_sf <- st_as_sf(x = elevs, 
+                     coords = c("Longitude","Latitude"),
+                     crs = 4326)
+
+elev_v <- get_elev_raster(elevs_sf, z = 14, src = "aws") %>% 
+  rast()
+
+buffered_points <- st_buffer(elevs_sf,elevs_sf$Uncertainty)
+elevs$dem <- terra::extract(elev_v, elevs_sf, fun = max, ID = FALSE) %>%
+  unlist
+elevs$maxelev <- terra::extract(elev_v, buffered_points, fun = max, ID = FALSE) %>%
+  unlist
+elevs$minelev <- terra::extract(elev_v, buffered_points, fun = min, ID = FALSE) %>%
+  unlist
+elevs$dem_uncertainty <- (elevs$maxelev - elevs$minelev)/2
+
+elevs$elev_diff <- abs(elevs$Elevation - elevs$dem)
+
+# the collected elevation data correlate well with the data recovered from the DEM
+ggplot(elevs)+
+  geom_point(aes(x = Elevation, y= dem))
+
+#lon-lat coordinate uncertainty versus the range of elevations in the DEM in that error radius
+# lon-lat uncertainty is much greater than corresponding elevational uncertainty
+ggplot(elevs)+
+  geom_point(aes(x = Uncertainty, y= dem_uncertainty))
+
+# neither uncertainty in the lat-lon coordinates nor the resulting range of 
+# possibly correct elevations in that error radius correlate 
+# with the actual differences between reported elevation and dem elevation
+ggplot(elevs)+
+  geom_point(aes(x = dem_uncertainty, y= elev_diff))
+
+ggplot(elevs)+
+  geom_point(aes(x = Uncertainty, y= elev_diff))
+
+#elevatr is biased to +1.6m vs our gps points
+correctionfactor <- mean(df$elev_diff%>% na.exclude())
+
+checkelevs <- filter(df, elev_diff < -50 | elev_diff >50) 
+#there are some major discrepancies, but all are solidly below 700m
+
+elev_lm <- lm(Elevation ~ dem, data = elevs)
+elev_uncertainty <- lm(elev_diff ~ dem_uncertainty, data = elevs)
+
+#### Set up df with elevational bands and taxon groups ####
 cutoffs <- c(700,1400)
 
 df <- df %>% elevBands(bbs = cutoffs)
+
+
 
 #### STEP 3 - Generate Plots ####
 accumulationPlots <- accCurve(
@@ -50,18 +107,18 @@ accumulation <- plot_grid(alignedAccumulation[[1]], alignedAccumulation[[2]],
                           rel_widths = c(3,2),
                           rel_heights = c(2,1))
 
-ggsave(filename = paste0(mtn, "_AccumulationPlot.png"),
+ggsave(filename = paste0("Figures", mtn, "_AccumulationPlot.png"),
        plot = accumulation,
        width = 8, height = 6, units = "in",
        bg = "white")
 
-ggsave(filename = paste0(mtn, "_ElevationPlot.png"),
+ggsave(filename = paste0("Figures", mtn, "_ElevationPlot.png"),
        plot = elevationPlot$rangeThrough,
-       width = 8, height = 6.5, units = "in",
+       width = 8, height = 7, units = "in",
        bg = "white")
 
-drive_put(paste0(mtn, "_ElevationPlot.png"), path = as_id(info$folder)) #not working
-drive_put(paste0(mtn, "_AccumulationPlot.png"), path = as_id(info$folder))
+drive_put(paste0("Figures", mtn, "_ElevationPlot.png"), path = as_id(info$folder)) 
+drive_put(paste0("Figures", mtn, "_AccumulationPlot.png"), path = as_id(info$folder))
 
 #### STEP 4 - Generate Tables ####
 
@@ -75,11 +132,7 @@ write_sheet(t2$PublicationTable, ss = as_id(info$t2), sheet = 1)
 
 
 
-#### STEP 5 - Calculate beta diversity for elevational bands
-
-beta <- betadiver(veganize(df, elevation = TRUE))
-
-#### STEP 6 - Leaflet Interactive Map #####
+#### STEP 5 - Leaflet Interactive Map #####
 elevationcolors <- colorFactor(c("#A8CCDE","#4E819A","#3B5374"), df$eband)
 
 df$Habitat[which(is.na(df$Habitat))] <- "not recorded"
@@ -100,3 +153,5 @@ map <- df %>%
   addScaleBar(position = "bottomleft",
               options= scaleBarOptions(metric = TRUE))
 
+library(htmlwidgets)
+saveWidget(map, file = "Figures/Katopasa_leaflet.html")

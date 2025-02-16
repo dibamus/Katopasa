@@ -3,7 +3,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
-Katopasa_AccumulationPlot.pdf
-Katopasa_ElevationPlot.pdf
-Katopasa_AccumulationPlot.png
-Katopasa_ElevationPlot.png
+Figures/Katopasa_ElevationPlot.png
+Figures/Katopasa_AccumulationPlot.png
+Figures/KatopasaMap.xcf
+Figures/KatopasaMap.png
+Figures/KatopasaMap_adjusted.png
