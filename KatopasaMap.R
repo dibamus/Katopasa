@@ -30,9 +30,12 @@ extent.df <- data.frame(
 ) %>% st_as_sf(coords = c("lon","lat")) %>% st_set_crs(4326) 
 
 #load in forestwatch data
+<<<<<<< HEAD
 # Forest Watch data granules (Top Left Corner at 0n, 120E) available at: 
 # https://storage.googleapis.com/earthenginepartners-hansen/GFC-2020-v1.8/download.html
 
+=======
+>>>>>>> bc4f5e8fa668f6b1184142c146ac765bed51d321
 fw <- terra::rast("Hansen_GFC-2020-v1.8_treecover2000_00N_120E.tif") %>%
   crop(extent.df)
 
@@ -211,4 +214,8 @@ library('cowplot')
 
 ggdraw(map)+ draw_plot(sulawesi_inset, x = 0.6, y = 0.6, height = 0.4, width = 0.4)
 
+<<<<<<< HEAD
 ggsave("Figures/KatopasaMap.png",width = 8, height = 8, units = "in")  
+=======
+ggsave("KatopasaMap.png",width = 8, height = 8, units = "in")  
+>>>>>>> bc4f5e8fa668f6b1184142c146ac765bed51d321

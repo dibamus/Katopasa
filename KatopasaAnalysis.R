@@ -30,11 +30,13 @@ df <- read_sheet(info$datasheet) %>% dfSetup() %>% addGroups()
 #### STEP 2 - Add groups/Look up Elevation####
 
 #### OPTIONAL: Check elevatr accuracy ####
+
 # Check elevational accuracy according to aws data from elevatr
 
 #
 
 elevs <- filter(df, !is.na(Latitude), !is.na(Uncertainty))[,c("Longitude","Latitude","Uncertainty","Elevation")]
+elevs <- filter(df, !is.na(Latitude))[,c("Longitude","Latitude")]
 
 elevs_sf <- st_as_sf(x = elevs, 
                      coords = c("Longitude","Latitude"),
@@ -71,6 +73,28 @@ ggplot(elevs)+
 
 ggplot(elevs)+
   geom_point(aes(x = Uncertainty, y= elev_diff))
+elev_v <- get_aws_points(elevs_sf, z = 14, units = "meters")
+
+df$elevatr <- NA
+
+df$elevatr[which(!is.na(df$Latitude))] <- elev_v[[1]]$elevation
+
+df$elev_diff <- df$Elevation-df$elevatr
+
+
+
+ggplot(df)+
+  geom_density(aes(x = elev_diff))
+
+ggplot(df)+
+  geom_point(aes(x = Elevation, y= elevatr))
+
+ggplot(df)+
+  geom_point(aes(x = Uncertainty, y= abs(elev_diff)))
+
+error_lm <- lm(Uncertainty ~ abs(elev_diff), df)
+
+elev_lm <- lm(elevatr ~Elevation, df, na.action = na.omit)
 
 #elevatr is biased to +1.6m vs our gps points
 correctionfactor <- mean(df$elev_diff%>% na.exclude())
@@ -80,6 +104,7 @@ checkelevs <- filter(df, elev_diff < -50 | elev_diff >50)
 
 elev_lm <- lm(Elevation ~ dem, data = elevs)
 elev_uncertainty <- lm(elev_diff ~ dem_uncertainty, data = elevs)
+elev_lm <- lm(Elevation ~ elevatr, data = df)
 
 #### Set up df with elevational bands and taxon groups ####
 cutoffs <- c(700,1400)
