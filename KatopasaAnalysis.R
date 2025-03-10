@@ -18,6 +18,7 @@ library("elevatr")
 library("divDyn")
 library("terra")
 library("sf")
+library("readxl")
 
 ##SETUP - simply supply
 # 2 - the NAME of your mountain
@@ -25,7 +26,7 @@ mtn <- "Katopasa"
 
 #### STEP 1 - Data Import/Cleanup ####
 info <- readRDS("folderIDs.rds") %>% filter(Mountain == mtn)
-df <- read_sheet(info$datasheet) %>% dfSetup() %>% addGroups()
+df <- read_xlsx("Katopasa_Specimens.xlsx") %>% dfSetup() %>% addGroups()
 
 #### STEP 2 - Add groups/Look up Elevation####
 
