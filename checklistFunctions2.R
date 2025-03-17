@@ -47,7 +47,7 @@ accCurve <- function(df, colors){
     filter(!is.na(Species_encountered))
   
   bandAcc <- ggplot(bandAccTable, aes(x = day, y = Species_encountered, group = band, linetype = band))+
-    geom_line(size = 1.5)+
+    geom_line(linewidth = 1.5)+
     ylab("Cumulative Species Encountered")+
     xlab("Days of Sampling in Elevational Band")+
     labs(title = "B")+
@@ -79,7 +79,7 @@ accCurve <- function(df, colors){
   
   # ggplot
   taxonAcc <- ggplot(taxonAccTable, aes(x = date, y=Species_encountered, group = taxon, color = taxon, linetype = taxon)) +
-    geom_line(size = 1.5) +
+    geom_line(linewidth = 1.5) +
     labs(title = "A")+
     ylab("Cumulative Species Encountered") +
     xlab("Date of Sampling") +
@@ -108,8 +108,8 @@ addGroups<- function(df){
   id <- df$'binom' # extract IDs
   #Lists of frog, snake, lizard, & turtle genera
   grp <- list(
-  frog = c("Tadpole","Tadpoles","Bufo","Chalcorana","Duttaphrynus","Hylarana","Ingerophrynus","Kaloula","Limnonectes","Occidozyga","Oreophryne","Papuarana","Polypedates","Rhacophorus","Tadpole","tadpole"),
-  snake = c("Shed","Ahaetulla","Amphiesma","Boiga","Calamaria","Coelognathus","Calamorhabdium","Chrysopelea","Cylindrophis","Dendrelaphis","Elaphe","Enhydris","Hebius","Hypsiscopus","Indotyphlops","Gonyosoma","Oligodon","Ophiophagus","Psammodynastes","Rabdion","Rhabdophis","snake","Tropidolaemus","Typhlops","Xenochrophis","Xenopeltis"),
+  frog = c("Tadpole","Tadpoles","Bufo","Chalcorana","Duttaphrynus","Hylarana","Ingerophrynus","Kaloula","Limnonectes","Occidozyga","Oreophryne","Papurana","Polypedates","Rhacophorus","Tadpole","tadpole"),
+  snake = c("Shed","Ahaetulla","Amphiesma","Boiga","Calamaria","Coelognathus","Calamorhabdium","Chrysopelea","Cylindrophis","Dendrelaphis","Elaphe","Enhydris","Hebius","Hypsiscopus","Indotyphlops","Gonyosoma","Oligodon","Ophiophagus","Psammodynastes","Ptyas","Rabdion","Rhabdophis","snake","Tropidolaemus","Typhlops","Xenochrophis","Xenopeltis"),
   lizard = c("Bronchocoela","Cyrtodactylus","Dibamus","Draco","Emoia","Eutropis","Gehyra","Gekko","Hemidactylus","Hemiphyllodactylus","Lamprolepis","Lipinia","Sphenomorphus","Tiliqua","Tytthoscincus","Varanus"),
   turtle = c("Cuora","Leucocephalon")
   )
@@ -361,7 +361,7 @@ plotElev <- function(df, colors){
   
   #line graph of range-through diversity
   rtDiv <- ggplot(dd, aes(x = eBin, y = divRT, group = group, color = group, linetype = group)) +
-    geom_line(size = 1.5)+ 
+    geom_line(linewidth = 1.5)+ 
     geom_vline(xintercept = bbs, color = "#586A6A", linetype = "dashed") +
     scale_color_manual(values = colors) +
     scale_linetype_manual(values = c("longdash", "dashed", "dotted","solid")) +

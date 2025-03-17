@@ -133,12 +133,12 @@ accumulation <- plot_grid(alignedAccumulation[[1]], alignedAccumulation[[2]],
                           rel_widths = c(3,2),
                           rel_heights = c(2,1))
 
-ggsave(filename = paste0("Figures", mtn, "_AccumulationPlot.png"),
+ggsave(filename = paste0("Figures/", mtn, "_AccumulationPlot.png"),
        plot = accumulation,
        width = 8, height = 6, units = "in",
        bg = "white")
 
-ggsave(filename = paste0("Figures", mtn, "_ElevationPlot.png"),
+ggsave(filename = paste0("Figures/", mtn, "_ElevationPlot.png"),
        plot = elevationPlot$rangeThrough,
        width = 8, height = 7, units = "in",
        bg = "white")
